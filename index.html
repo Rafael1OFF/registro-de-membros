@@ -101,18 +101,29 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 25px;
+    overflow-x: auto;
+    display: block;
   }
   th, td {
     padding: 8px 12px;
     border: 1px solid #ddd;
     font-size: 14px;
+    text-align: left;
   }
   th {
     background: #4a90e2;
     color: white;
   }
+  /* --- FIX: Sempre lado a lado os botões de ação --- */
+  td.actions {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+    justify-content: flex-start;
+  }
   td.actions button {
-    margin-right: 5px;
+    margin-right: 0;
     background: #1d3857;
   }
   td.actions button.delete {
@@ -187,6 +198,174 @@
   #btnExportarPDF:hover {
     background: #3ac2a6;
   }
+
+  /* Responsividade */
+  @media (max-width: 700px) {
+    main, section.apresentacao {
+      max-width: 98vw;
+      margin: 10px 1vw;
+      padding: 10px;
+    }
+    #modalConteudo {
+      width: 98vw;
+      min-width: unset;
+      max-width: 99vw;
+      margin: 30px auto;
+      padding: 10px 5vw;
+    }
+    form {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    form .full {
+      grid-column: 1 / 2;
+    }
+    table, thead, tbody, th, td, tr {
+      display: block;
+      width: 100%;
+    }
+    thead {
+      display: none;
+    }
+    tr {
+      margin-bottom: 15px;
+      border-bottom: 2px solid #eee;
+      background: #fafafa;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px #ddd;
+      padding: 8px 0;
+    }
+    td {
+      border: none;
+      padding: 8px 10px;
+      position: relative;
+      font-size: 15px;
+    }
+    td:before {
+      content: attr(data-label);
+      font-weight: bold;
+      display: block;
+      margin-bottom: 2px;
+      color: #4a90e2;
+    }
+    td.actions {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+  }
+
+  /* --- ESTILOS ÁREA RESTRITA --- */
+  #areaMembros {
+    display: none;
+    margin-top: 30px;
+  }
+  #areaMembros h3 {
+    margin: 0;
+    color: #4a90e2;
+  }
+  #areaMembros button {
+    background: #e94e4e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+  }
+  #areaMembros button:hover {
+    background: #d9534f;
+  }
+  #areaMembros input[type="text"] {
+    width: 100%;
+    max-width: 350px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+  }
+  #areaMembros table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0;
+    background: #fff;
+  }
+  #areaMembros th, #areaMembros td {
+    padding: 8px 6px;
+    border: 1px solid #ddd;
+    font-size: 15px;
+    text-align: left;
+  }
+  #areaMembros th {
+    background: #4a90e2;
+    color: white;
+  }
+  #areaMembros td.actions {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  #areaMembros td.actions button {
+    padding: 4px 8px;
+    font-size: 13px;
+    border-radius: 3px;
+    background: #1d3857;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  #areaMembros td.actions button.delete {
+    background: #bdbdbd;
+    color: #222;
+  }
+  #areaMembros td.actions button:hover {
+    opacity: 0.8;
+  }
+  #areaMembros td.nomeMembro {
+    cursor: pointer;
+    color: #1a73e8;
+    text-decoration: underline;
+  }
+  @media (max-width: 700px) {
+    #areaMembros table, #areaMembros thead, #areaMembros tbody, #areaMembros th, #areaMembros td, #areaMembros tr {
+      display: block;
+      width: 100%;
+    }
+    #areaMembros thead {
+      display: none;
+    }
+    #areaMembros tr {
+      margin-bottom: 10px;
+      border-bottom: 2px solid #eee;
+      background: #fafafa;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px #ddd;
+      padding: 6px 0;
+    }
+    #areaMembros td {
+      border: none;
+      padding: 8px 10px;
+      position: relative;
+      font-size: 16px;
+    }
+    #areaMembros td:before {
+      content: attr(data-label);
+      font-weight: bold;
+      display: block;
+      margin-bottom: 2px;
+      color: #4a90e2;
+    }
+    #areaMembros td.actions {
+      flex-direction: row;
+      gap: 5px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+  }
 </style>
 </head>
 <body>
@@ -204,11 +383,11 @@
 <main>
   <h2>Cadastro de Membros</h2>
   <form id="formMembros" onsubmit="event.preventDefault(); salvarMembro();">
-  
-	<label for="Membro de qual igreja ?">Membro de qual igreja ?</label>
+
+    <label for="Membro de qual igreja ?">Membro de qual igreja ?</label>
     <input type="text" id="Igreja" />
-	
-	<label for="nome">Nome completo*</label>
+
+    <label for="nome">Nome completo*</label>
     <input type="text" id="nome" required />
 
     <label for="idade">Idade*</label>
@@ -265,13 +444,13 @@
     <label for="funcao">Função na Igreja</label>
     <select id="funcao" onchange="verificarFuncao()">
       <option value="Ainda não tenho nenhuma função">Ainda não tenho nenhuma função</option>
-	  <option value="Pastor">Pastor</option>
-	  <option value="Pastora">Pastora</option>
+      <option value="Pastor">Pastor</option>
+      <option value="Pastora">Pastora</option>
       <option value="Louvor">Louvor</option>
       <option value="Evangelismo">Evangelismo</option>
       <option value="Recepção">Recepção</option>
       <option value="Ensino">Ensino</option>
-	  <option value="Mesário">Mesário</option>
+      <option value="Mesário">Mesário</option>
       <option value="Contador">Contador</option>
     </select>
 
@@ -283,19 +462,45 @@
     </div>
   </form>
 
-  <table id="tabelaMembros">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Idade</th>
-        <th>E-mail</th>
-        <th>Telefone</th>
-        <th>Função</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <!-- Botão para acessar área restrita -->
+  <div style="text-align:right; margin-top:30px;">
+    <button id="btnAcessarMembros" onclick="abrirLogin()">🔒 Acessar Membros Registrados</button>
+  </div>
+
+  <!-- Modal de Login -->
+  <div id="modalLogin" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5);">
+    <div style="background:white; max-width:350px; margin:10vh auto; padding:30px 25px 20px 25px; border-radius:8px; box-shadow:0 0 15px #222; position:relative;">
+      <button onclick="fecharLogin()" style="position:absolute; right:15px; top:10px; background:#e94e4e; color:white; border:none; border-radius:50%; width:28px; height:28px; font-size:18px; cursor:pointer;">&times;</button>
+      <h3 style="margin-top:0; color:#4a90e2;">Login Restrito</h3>
+      <label for="loginUser">Usuário</label>
+      <input type="text" id="loginUser" style="width:100%;margin-bottom:10px;">
+      <label for="loginPass">Senha</label>
+      <input type="password" id="loginPass" style="width:100%;margin-bottom:15px;">
+      <button onclick="fazerLogin()" style="width:100%;background:#4a90e2;">Entrar</button>
+      <div id="loginErro" style="color:#e94e4e; margin-top:10px; display:none;">Usuário ou senha inválidos.</div>
+    </div>
+  </div>
+
+  <!-- Área restrita dos membros (apenas nome e telefone, ações, responsivo) -->
+  <div id="areaMembros" style="display:none; margin-top:30px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 style="margin:0; color:#4a90e2;">Membros Registrados</h3>
+      <button onclick="fecharAreaMembros()" style="background:#e94e4e;">Sair</button>
+    </div>
+    <input type="text" id="pesquisaMembro" placeholder="Pesquisar por nome ou telefone..." style="width:100%;max-width:350px;margin-bottom:15px;padding:8px 10px;border-radius:4px;border:1px solid #ccc;">
+    <div style="overflow-x:auto;">
+      <table id="tabelaMembrosRestrita" style="min-width:260px;">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th style="min-width:90px;">Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
 </main>
 
 <!-- Modal Detalhes -->
@@ -425,15 +630,17 @@
       tdNome.textContent = m.nome;
       tdNome.classList.add('nomeMembro');
       tdNome.onclick = () => mostrarDetalhes(i);
+      tdNome.setAttribute('data-label', 'Nome');
       tr.appendChild(tdNome);
 
-      tr.appendChild(criarTd(m.idade));
-      tr.appendChild(criarTd(m.email));
-      tr.appendChild(criarTd(m.telefone));
-      tr.appendChild(criarTd(m.funcao));
+      const tdIdade = criarTd(m.idade); tdIdade.setAttribute('data-label', 'Idade'); tr.appendChild(tdIdade);
+      const tdEmail = criarTd(m.email); tdEmail.setAttribute('data-label', 'E-mail'); tr.appendChild(tdEmail);
+      const tdTel = criarTd(m.telefone); tdTel.setAttribute('data-label', 'Telefone'); tr.appendChild(tdTel);
+      const tdFunc = criarTd(m.funcao); tdFunc.setAttribute('data-label', 'Função'); tr.appendChild(tdFunc);
 
       const tdAcoes = document.createElement('td');
       tdAcoes.classList.add('actions');
+      tdAcoes.setAttribute('data-label', 'Ações');
       const btnEditar = document.createElement('button');
       btnEditar.textContent = 'Editar';
       btnEditar.onclick = () => editarMembro(i);
@@ -551,6 +758,103 @@
     }
 
     doc.save(`Membro_${membroParaPDF.nome.replace(/\s+/g, '_')}.pdf`);
+  }
+
+  // --- LOGIN E ÁREA RESTRITA ---
+  const USUARIO = "admin";
+  const SENHA = "1234";
+
+  function abrirLogin() {
+    document.getElementById('modalLogin').style.display = 'block';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginErro').style.display = 'none';
+  }
+  function fecharLogin() {
+    document.getElementById('modalLogin').style.display = 'none';
+  }
+  function fazerLogin() {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    if (user === USUARIO && pass === SENHA) {
+      document.getElementById('modalLogin').style.display = 'none';
+      mostrarAreaMembros();
+    } else {
+      document.getElementById('loginErro').style.display = 'block';
+    }
+  }
+  function mostrarAreaMembros() {
+    document.getElementById('areaMembros').style.display = 'block';
+    atualizarTabelaRestrita();
+  }
+  function fecharAreaMembros() {
+    document.getElementById('areaMembros').style.display = 'none';
+  }
+
+  // Pesquisa e ordenação alfabética
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('pesquisaMembro').addEventListener('input', atualizarTabelaRestrita);
+  });
+
+  function atualizarTabelaRestrita() {
+    const filtro = (document.getElementById('pesquisaMembro')?.value || '').toLowerCase();
+    let lista = [...membros];
+    // Ordena por nome
+    lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    // Filtra
+    if (filtro) {
+      lista = lista.filter(m =>
+        (m.nome && m.nome.toLowerCase().includes(filtro)) ||
+        (m.telefone && m.telefone.toLowerCase().includes(filtro))
+      );
+    }
+    const tbody = document.querySelector('#tabelaMembrosRestrita tbody');
+    tbody.innerHTML = '';
+    lista.forEach((m, i) => {
+      const tr = document.createElement('tr');
+      // Nome clicável para abrir detalhes
+      const tdNome = document.createElement('td');
+      tdNome.textContent = m.nome || '';
+      tdNome.classList.add('nomeMembro');
+      tdNome.setAttribute('data-label', 'Nome');
+      tdNome.onclick = () => mostrarDetalhes(i);
+
+      const tdTel = document.createElement('td');
+      tdTel.textContent = m.telefone || '';
+      tdTel.setAttribute('data-label', 'Telefone');
+
+      const tdAcoes = document.createElement('td');
+      tdAcoes.classList.add('actions');
+      tdAcoes.setAttribute('data-label', 'Ações');
+      // Botão editar
+      const btnEditar = document.createElement('button');
+      btnEditar.textContent = 'Editar';
+      btnEditar.onclick = () => {
+        fecharAreaMembros();
+        editarMembro(i);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+      // Botão excluir
+      const btnExcluir = document.createElement('button');
+      btnExcluir.textContent = 'Excluir';
+      btnExcluir.classList.add('delete');
+      btnExcluir.onclick = () => {
+        if (confirm(`Deseja realmente excluir o membro "${m.nome}"?`)) {
+          membros.splice(i, 1);
+          localStorage.setItem('membros', JSON.stringify(membros));
+          atualizarTabelaRestrita();
+          atualizarTabela();
+        }
+      };
+      tdAcoes.appendChild(btnEditar);
+      tdAcoes.appendChild(btnExcluir);
+
+      tr.appendChild(tdNome);
+      tr.appendChild(tdTel);
+      tr.appendChild(tdAcoes);
+
+      tbody.appendChild(tr);
+    });
   }
 
   // Inicializar
