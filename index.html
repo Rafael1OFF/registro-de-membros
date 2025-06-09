@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Comunidade Família Cristã</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0; background: #f5f5f5;
+    color: #333;
+  }
+  header {
+    background: #4a90e2;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+  }
+  section.apresentacao {
+    padding: 20px;
+    background: white;
+    max-width: 900px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 0 12px #aaa;
+  }
+  section.apresentacao img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    animation: leveMovimento 6s ease-in-out infinite alternate;
+  }
+  @keyframes leveMovimento {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(10px); }
+  }
+  main {
+    max-width: 900px;
+    margin: 0 auto 40px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 12px #aaa;
+  }
+  main h2 {
+    margin-top: 0;
+  }
+  form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  form input[type=text],
+  form input[type=number],
+  form input[type=email],
+  form textarea,
+  form select {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  form textarea {
+    resize: vertical;
+  }
+  form .full {
+    grid-column: 1 / -1;
+  }
+  #almejaFuncao {
+    display: none;
+  }
+  button {
+    cursor: pointer;
+    padding: 10px 15px;
+    border: none;
+    background: #4a90e2;
+    color: white;
+    border-radius: 4px;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background: #357ABD;
+  }
+  button.hidden {
+    display: none;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+  }
+  th, td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+  }
+  th {
+    background: #4a90e2;
+    color: white;
+  }
+  td.actions button {
+    margin-right: 5px;
+    background: #50e3c2;
+  }
+  td.actions button.delete {
+    background: #e94e4e;
+  }
+  td.actions button:hover {
+    opacity: 0.8;
+  }
+  td.nomeMembro {
+    cursor: pointer;
+    color: #1a73e8;
+    text-decoration: underline;
+  }
+
+  /* Modal estilo */
+  #modalDetalhes {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+  }
+  #modalConteudo {
+    background: white;
+    margin: 80px auto;
+    padding: 20px 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 0 15px #222;
+    position: relative;
+  }
+  #modalConteudo h3 {
+    margin-top: 0;
+  }
+  #modalConteudo button.closeModal {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    background: #e94e4e;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 22px;
+  }
+  #modalConteudo button.closeModal:hover {
+    opacity: 0.8;
+  }
+  #modalConteudo dl {
+    margin: 0;
+  }
+  #modalConteudo dt {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  #modalConteudo dd {
+    margin-left: 15px;
+    margin-bottom: 8px;
+  }
+  #btnExportarPDF {
+    margin-top: 20px;
+    background: #50e3c2;
+    color: #333;
+  }
+  #btnExportarPDF:hover {
+    background: #3ac2a6;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Comunidade Família Cristã</h1>
+</header>
+
+<section class="apresentacao">
+  <h2>Bem-vindo à Comunidade Família Cristã</h2>
+  <p>Nosso propósito é levar amor, fé e esperança para todos. Junte-se a nós em momentos de louvor, oração e comunhão.</p>
+  <img src="https://images.unsplash.com/photo-1543702404-38c2035462ad?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Pessoas levantando as mãos em louvor" />
+</section>
+
+<main>
+  <h2>Cadastro de Membros</h2>
+  <form id="formMembros" onsubmit="event.preventDefault(); salvarMembro();">
+    <label for="nome">Nome completo*</label>
+    <input type="text" id="nome" required />
+
+    <label for="idade">Idade*</label>
+    <input type="number" id="idade" min="0" required />
+
+    <label for="email">E-mail*</label>
+    <input type="email" id="email" required />
+
+    <label for="telefone">Telefone*</label>
+    <input type="text" id="telefone" required />
+
+    <label for="telefone2">Telefone 2</label>
+    <input type="text" id="telefone2" />
+
+    <label for="nomePai">Nome do Pai</label>
+    <input type="text" id="nomePai" />
+
+    <label for="nomeMae">Nome da Mãe</label>
+    <input type="text" id="nomeMae" />
+
+    <label for="escolaridade">Escolaridade</label>
+    <select id="escolaridade">
+      <option value="Ensino Fundamental">Ensino Fundamental</option>
+      <option value="Ensino Médio">Ensino Médio</option>
+      <option value="Ensino Superior">Ensino Superior</option>
+      <option value="Pós-Graduação">Pós-Graduação</option>
+      <option value="Outro">Outro</option>
+    </select>
+
+    <label for="endereco">Endereço</label>
+    <input type="text" id="endereco" class="full" />
+
+    <label for="tempoIgreja">Tempo na Igreja</label>
+    <input type="text" id="tempoIgreja" />
+
+    <label for="outraReligiao">Veio de Outra Religião?</label>
+    <input type="text" id="outraReligiao" />
+
+    <label for="batizado">Batizado</label>
+    <select id="batizado">
+      <option value="Sim">Sim</option>
+      <option value="Não">Não</option>
+    </select>
+
+    <label for="trabalha">Trabalha?</label>
+    <select id="trabalha" onchange="verificarTrabalho()">
+      <option value="Sim">Sim</option>
+      <option value="Não">Não</option>
+    </select>
+
+    <label for="profissao">Profissão</label>
+    <input type="text" id="profissao" />
+
+    <label for="funcao">Função na Igreja</label>
+    <select id="funcao" onchange="verificarFuncao()">
+      <option value="Ainda não tenho nenhuma função">Ainda não tenho nenhuma função</option>
+      <option value="Louvor">Louvor</option>
+      <option value="Evangelismo">Evangelismo</option>
+      <option value="Recepção">Recepção</option>
+      <option value="Ensino">Ensino</option>
+      <option value="Administração">Administração</option>
+    </select>
+
+    <input type="text" id="almejaFuncao" placeholder="Qual função deseja?" />
+
+    <div class="full">
+      <button type="submit" id="btnSalvar">Cadastrar Membro</button>
+      <button type="button" id="btnCancelar" class="hidden" onclick="cancelarEdicao()">Cancelar Edição</button>
+    </div>
+  </form>
+
+  <table id="tabelaMembros">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Idade</th>
+        <th>E-mail</th>
+        <th>Telefone</th>
+        <th>Função</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</main>
+
+<!-- Modal Detalhes -->
+<div id="modalDetalhes">
+  <div id="modalConteudo">
+    <button class="closeModal" title="Fechar" onclick="fecharModal()">&times;</button>
+    <h3>Detalhes do Membro</h3>
+    <dl id="detalhesMembro"></dl>
+    <button id="btnExportarPDF" onclick="exportarPDF()">Exportar para PDF</button>
+  </div>
+</div>
+
+<!-- jsPDF CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  let membros = JSON.parse(localStorage.getItem('membros') || '[]');
+  let indiceEditando = -1;
+  let membroParaPDF = null;
+
+  function salvarMembro() {
+    const membro = {
+      nome: document.getElementById('nome').value.trim(),
+      idade: document.getElementById('idade').value,
+      email: document.getElementById('email').value.trim(),
+      telefone: document.getElementById('telefone').value.trim(),
+      telefone2: document.getElementById('telefone2').value.trim(),
+      nomePai: document.getElementById('nomePai').value.trim(),
+      nomeMae: document.getElementById('nomeMae').value.trim(),
+      escolaridade: document.getElementById('escolaridade').value,
+      endereco: document.getElementById('endereco').value.trim(),
+      tempoIgreja: document.getElementById('tempoIgreja').value.trim(),
+      outraReligiao: document.getElementById('outraReligiao').value.trim(),
+      batizado: document.getElementById('batizado').value,
+      trabalha: document.getElementById('trabalha').value,
+      profissao: document.getElementById('profissao').value.trim(),
+      funcao: document.getElementById('funcao').value,
+      almejaFuncao: document.getElementById('almejaFuncao').value.trim()
+    };
+
+    if (membro.funcao === 'Ainda não tenho nenhuma função' && membro.almejaFuncao) {
+      membro.funcao += ` (Deseja: ${membro.almejaFuncao})`;
+    }
+
+    if (!membro.nome || !membro.idade || !membro.email || !membro.telefone) {
+      alert('Por favor, preencha os campos obrigatórios: Nome, Idade, E-mail e Telefone.');
+      return;
+    }
+
+    if (indiceEditando >= 0) {
+      membros[indiceEditando] = membro;
+      indiceEditando = -1;
+      document.getElementById('btnSalvar').textContent = 'Cadastrar Membro';
+      document.getElementById('btnCancelar').classList.add('hidden');
+    } else {
+      membros.push(membro);
+    }
+
+    localStorage.setItem('membros', JSON.stringify(membros));
+    atualizarTabela();
+    limparFormulario();
+  }
+
+  function editarMembro(i) {
+    const m = membros[i];
+    document.getElementById('nome').value = m.nome;
+    document.getElementById('idade').value = m.idade;
+    document.getElementById('email').value = m.email;
+    document.getElementById('telefone').value = m.telefone;
+    document.getElementById('telefone2').value = m.telefone2;
+    document.getElementById('nomePai').value = m.nomePai;
+    document.getElementById('nomeMae').value = m.nomeMae;
+    document.getElementById('escolaridade').value = m.escolaridade;
+    document.getElementById('endereco').value = m.endereco;
+    document.getElementById('tempoIgreja').value = m.tempoIgreja;
+    document.getElementById('outraReligiao').value = m.outraReligiao;
+    document.getElementById('batizado').value = m.batizado;
+    document.getElementById('trabalha').value = m.trabalha;
+    document.getElementById('profissao').value = m.profissao;
+
+    // Detectar se almeja função está no texto da função
+    const funcaoBase = m.funcao.includes('(Deseja:') ? 'Ainda não tenho nenhuma função' : m.funcao;
+    document.getElementById('funcao').value = funcaoBase;
+
+    if (m.funcao.includes('(Deseja:')) {
+      const desejado = m.funcao.match(/\(Deseja:\s*(.*?)\)$/);
+      document.getElementById('almejaFuncao').value = desejado ? desejado[1] : '';
+      document.getElementById('almejaFuncao').style.display = 'block';
+    } else {
+      document.getElementById('almejaFuncao').value = '';
+      document.getElementById('almejaFuncao').style.display = 'none';
+    }
+
+    indiceEditando = i;
+    document.getElementById('btnSalvar').textContent = 'Salvar Alterações';
+    document.getElementById('btnCancelar').classList.remove('hidden');
+  }
+
+  function cancelarEdicao() {
+    limparFormulario();
+    indiceEditando = -1;
+    document.getElementById('btnSalvar').textContent = 'Cadastrar Membro';
+    document.getElementById('btnCancelar').classList.add('hidden');
+  }
+
+  function excluirMembro(i) {
+    if (confirm(`Deseja realmente excluir o membro "${membros[i].nome}"?`)) {
+      membros.splice(i, 1);
+      localStorage.setItem('membros', JSON.stringify(membros));
+      atualizarTabela();
+    }
+  }
+
+  function limparFormulario() {
+    document.getElementById('formMembros').reset();
+    document.getElementById('almejaFuncao').style.display = 'none';
+  }
+
+  function atualizarTabela() {
+    const tbody = document.querySelector('#tabelaMembros tbody');
+    tbody.innerHTML = '';
+    membros.forEach((m, i) => {
+      const tr = document.createElement('tr');
+
+      // Nome clicável
+      const tdNome = document.createElement('td');
+      tdNome.textContent = m.nome;
+      tdNome.classList.add('nomeMembro');
+      tdNome.onclick = () => mostrarDetalhes(i);
+      tr.appendChild(tdNome);
+
+      tr.appendChild(criarTd(m.idade));
+      tr.appendChild(criarTd(m.email));
+      tr.appendChild(criarTd(m.telefone));
+      tr.appendChild(criarTd(m.funcao));
+
+      const tdAcoes = document.createElement('td');
+      tdAcoes.classList.add('actions');
+      const btnEditar = document.createElement('button');
+      btnEditar.textContent = 'Editar';
+      btnEditar.onclick = () => editarMembro(i);
+
+      const btnExcluir = document.createElement('button');
+      btnExcluir.textContent = 'Excluir';
+      btnExcluir.classList.add('delete');
+      btnExcluir.onclick = () => excluirMembro(i);
+
+      tdAcoes.appendChild(btnEditar);
+      tdAcoes.appendChild(btnExcluir);
+      tr.appendChild(tdAcoes);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function criarTd(texto) {
+    const td = document.createElement('td');
+    td.textContent = texto || '';
+    return td;
+  }
+
+  function verificarFuncao() {
+    const funcao = document.getElementById('funcao').value;
+    const almeja = document.getElementById('almejaFuncao');
+    if (funcao === 'Ainda não tenho nenhuma função') {
+      almeja.style.display = 'block';
+    } else {
+      almeja.style.display = 'none';
+      almeja.value = '';
+    }
+  }
+
+  function verificarTrabalho() {
+    const trabalha = document.getElementById('trabalha').value;
+    const profissao = document.getElementById('profissao');
+    if (trabalha === 'Sim') {
+      profissao.disabled = false;
+    } else {
+      profissao.value = '';
+      profissao.disabled = true;
+    }
+  }
+
+  // Mostrar detalhes do membro em modal
+  function mostrarDetalhes(i) {
+    membroParaPDF = membros[i];
+    const dl = document.getElementById('detalhesMembro');
+    dl.innerHTML = ''; // limpa conteúdo
+
+    for (const chave in membroParaPDF) {
+      const dt = document.createElement('dt');
+      dt.textContent = formatarCampo(chave);
+      const dd = document.createElement('dd');
+      dd.textContent = membroParaPDF[chave] || '-';
+      dl.appendChild(dt);
+      dl.appendChild(dd);
+    }
+
+    document.getElementById('modalDetalhes').style.display = 'block';
+  }
+
+  function fecharModal() {
+    document.getElementById('modalDetalhes').style.display = 'none';
+    membroParaPDF = null;
+  }
+
+  // Formata nomes dos campos para exibir no modal
+  function formatarCampo(campo) {
+    const mapCampos = {
+      nome: 'Nome Completo',
+      idade: 'Idade',
+      email: 'E-mail',
+      telefone: 'Telefone',
+      telefone2: 'Telefone 2',
+      nomePai: 'Nome do Pai',
+      nomeMae: 'Nome da Mãe',
+      escolaridade: 'Escolaridade',
+      endereco: 'Endereço',
+      tempoIgreja: 'Tempo na igreja',
+      outraReligiao: 'Veio de outra religião?',
+      batizado: 'Batizado',
+      trabalha: 'Trabalha?',
+      profissao: 'Profissão',
+      funcao: 'Função na Igreja',
+      almejaFuncao: 'Almeja função'
+    };
+    return mapCampos[campo] || campo;
+  }
+
+  // Exportar dados do membro para PDF usando jsPDF
+  function exportarPDF() {
+    if (!membroParaPDF) return;
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text('Detalhes do Membro', 14, 22);
+    doc.setFontSize(12);
+
+    let y = 35;
+    for (const chave in membroParaPDF) {
+      const label = formatarCampo(chave);
+      const valor = membroParaPDF[chave] || '-';
+      // quebra linha se texto muito grande
+      const splitText = doc.splitTextToSize(`${label}: ${valor}`, 180);
+      doc.text(splitText, 14, y);
+      y += splitText.length * 7;
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
+      }
+    }
+
+    doc.save(`Membro_${membroParaPDF.nome.replace(/\s+/g, '_')}.pdf`);
+  }
+
+  // Inicializar
+  atualizarTabela();
+  verificarFuncao();
+  verificarTrabalho();
+
+</script>
+
+</body>
+</html>
